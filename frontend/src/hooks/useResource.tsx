@@ -61,7 +61,7 @@ export const useResource = () => {
     }
   };
 
-  const updateResource = async (id: string, data: Omit<Resource, "id">) => {
+  const updateResource = async (id: number, data: Omit<Resource, "id">) => {
     try {
       await axios.put(`${BASE_URL}/resource/${id}`, data);
       fetchResources();
