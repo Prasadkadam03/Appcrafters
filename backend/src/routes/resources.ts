@@ -72,5 +72,40 @@ router.post("/", (req , res): any => {
   res.status(201).json(newResource);
 });
 
+// Update an existing resource by id
+router.put("/:id", (req , res) : any => {
+  const resourceId = parseInt(req.params.id, 10);
+  const parsed = ResourceSchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    return res.status(400).json({
+      errors: parsed.error.format(),
+    });
+  }
+
+  const resourceIndex = resources.findIndex((resource) => resource.id === resourceId);
+
+  if (resourceIndex === -1) {
+    return res.status(404).json({ error: "Resource not found" });
+  }
+
+  // Update the resource
+  resources[resourceIndex] = { ...resources[resourceIndex], ...parsed.data };
+  res.status(200).json(resources[resourceIndex]);
+});
+
+// Delete a resource by id
+router.delete("/:id", (req, res) : any => {
+  const resourceId = parseInt(req.params.id, 10);
+  const resourceIndex = resources.findIndex((resource) => resource.id === resourceId);
+
+  if (resourceIndex === -1) {
+    return res.status(404).json({ error: "Resource not found" });
+  }
+
+  // Delete the resource
+  resources.splice(resourceIndex, 1);
+  res.status(200).json({ message: "Resource deleted successfully" });
+});
 
 export default router;
